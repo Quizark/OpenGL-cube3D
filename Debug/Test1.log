@@ -1,3 +1,0 @@
-﻿  glad.c
-C:\Program Files\Microsoft Visual Studio\2022\Enterprise\MSBuild\Microsoft\VC\v170\Microsoft.CppCommon.targets(703,5): error MSB6006: Polecenie „CL.exe” zakończone przez kod 2.
-C:\Lib\GLAD\src\glad.c(25,10): fatal  error C1083: Nie można otworzyć pliku dołącz: 'glad/glad.h': No such file or directory
