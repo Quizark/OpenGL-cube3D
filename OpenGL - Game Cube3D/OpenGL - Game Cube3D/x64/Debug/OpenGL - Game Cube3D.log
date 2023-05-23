@@ -1,4 +1,6 @@
-﻿  Źródło.cpp
-G:\OpenGL\OpenGL - Game Cube3D\OpenGL - Game Cube3D\Źródło.cpp(404,13): warning C4551: wywołaniu funkcji brakuje listy argumentów
-G:\OpenGL\OpenGL - Game Cube3D\OpenGL - Game Cube3D\Źródło.cpp(406,13): warning C4551: wywołaniu funkcji brakuje listy argumentów
-  OpenGL - Game Cube3D.vcxproj -> G:\OpenGL\OpenGL - Game Cube3D\x64\Debug\OpenGL - Game Cube3D.exe
+﻿  Main.cpp
+C:\Users\Staszek\Documents\milionerzy\OpenGL-cube3D\OpenGL - Game Cube3D\OpenGL - Game Cube3D\Main.cpp(413,13): warning C4551: wywołaniu funkcji brakuje listy argumentów
+C:\Users\Staszek\Documents\milionerzy\OpenGL-cube3D\OpenGL - Game Cube3D\OpenGL - Game Cube3D\Main.cpp(415,13): warning C4551: wywołaniu funkcji brakuje listy argumentów
+C:\Users\Staszek\Documents\milionerzy\OpenGL-cube3D\OpenGL - Game Cube3D\OpenGL - Game Cube3D\Main.cpp(998,13): warning C4551: wywołaniu funkcji brakuje listy argumentów
+C:\Users\Staszek\Documents\milionerzy\OpenGL-cube3D\OpenGL - Game Cube3D\OpenGL - Game Cube3D\Main.cpp(1000,13): warning C4551: wywołaniu funkcji brakuje listy argumentów
+  OpenGL - Game Cube3D.vcxproj -> C:\Users\Staszek\Documents\milionerzy\OpenGL-cube3D\OpenGL - Game Cube3D\x64\Debug\OpenGL - Game Cube3D.exe
