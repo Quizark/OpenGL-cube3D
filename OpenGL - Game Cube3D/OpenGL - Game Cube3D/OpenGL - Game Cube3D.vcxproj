@@ -107,12 +107,13 @@
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
-      <AdditionalIncludeDirectories>C:\Lib\freeGLUT\include;C:\Lib\GLUT;C:\Lib\GLM\include\;C:\Lib;C:\Lib\lib-vc2022;G:\OpenGL\Test1\Test1;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>C:\Program Files\Assimp\include;C:\Lib\freeGLUT\include;C:\Lib\GLUT;C:\Lib\GLM\include\;C:\Lib;C:\Lib\lib-vc2022;G:\OpenGL\Test1\Test1;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalLibraryDirectories>C:\Lib\GLUT;C:\Lib\freeGLUT\lib\x64;C:\Lib\freeGLUT\bin\x64;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>C:\Program Files\Assimp\lib\x64;C:\Lib\GLUT;C:\Lib\freeGLUT\lib\x64;C:\Lib\freeGLUT\bin\x64;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalDependencies>assimp-vc143-mt.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">

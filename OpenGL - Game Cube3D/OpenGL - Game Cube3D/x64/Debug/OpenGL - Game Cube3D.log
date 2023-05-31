@@ -1,6 +1,24 @@
 ﻿  Main.cpp
-C:\Users\Staszek\Documents\milionerzy\OpenGL-cube3D\OpenGL - Game Cube3D\OpenGL - Game Cube3D\Main.cpp(413,13): warning C4551: wywołaniu funkcji brakuje listy argumentów
-C:\Users\Staszek\Documents\milionerzy\OpenGL-cube3D\OpenGL - Game Cube3D\OpenGL - Game Cube3D\Main.cpp(415,13): warning C4551: wywołaniu funkcji brakuje listy argumentów
-C:\Users\Staszek\Documents\milionerzy\OpenGL-cube3D\OpenGL - Game Cube3D\OpenGL - Game Cube3D\Main.cpp(998,13): warning C4551: wywołaniu funkcji brakuje listy argumentów
-C:\Users\Staszek\Documents\milionerzy\OpenGL-cube3D\OpenGL - Game Cube3D\OpenGL - Game Cube3D\Main.cpp(1000,13): warning C4551: wywołaniu funkcji brakuje listy argumentów
+C:\Users\Staszek\Documents\milionerzy\OpenGL-cube3D\OpenGL - Game Cube3D\OpenGL - Game Cube3D\Main.cpp(92,49): warning C4244: "argument": konwersja z "double" do "_Ty", możliwa utrata danych
+          with
+          [
+              _Ty=GLfloat
+          ]
+C:\Users\Staszek\Documents\milionerzy\OpenGL-cube3D\OpenGL - Game Cube3D\OpenGL - Game Cube3D\Main.cpp(93,49): warning C4244: "argument": konwersja z "double" do "_Ty", możliwa utrata danych
+          with
+          [
+              _Ty=GLfloat
+          ]
+C:\Users\Staszek\Documents\milionerzy\OpenGL-cube3D\OpenGL - Game Cube3D\OpenGL - Game Cube3D\Main.cpp(94,49): warning C4244: "argument": konwersja z "double" do "_Ty", możliwa utrata danych
+          with
+          [
+              _Ty=GLfloat
+          ]
+C:\Users\Staszek\Documents\milionerzy\OpenGL-cube3D\OpenGL - Game Cube3D\OpenGL - Game Cube3D\Main.cpp(130,81): warning C4267: "argument": konwersja z "size_t" do "GLsizei", możliwa utrata danych
+C:\Users\Staszek\Documents\milionerzy\OpenGL-cube3D\OpenGL - Game Cube3D\OpenGL - Game Cube3D\Main.cpp(495,9): warning C4551: wywołaniu funkcji brakuje listy argumentów
+C:\Users\Staszek\Documents\milionerzy\OpenGL-cube3D\OpenGL - Game Cube3D\OpenGL - Game Cube3D\Main.cpp(521,13): warning C4551: wywołaniu funkcji brakuje listy argumentów
+C:\Users\Staszek\Documents\milionerzy\OpenGL-cube3D\OpenGL - Game Cube3D\OpenGL - Game Cube3D\Main.cpp(523,13): warning C4551: wywołaniu funkcji brakuje listy argumentów
+C:\Users\Staszek\Documents\milionerzy\OpenGL-cube3D\OpenGL - Game Cube3D\OpenGL - Game Cube3D\Main.cpp(1121,13): warning C4551: wywołaniu funkcji brakuje listy argumentów
+C:\Users\Staszek\Documents\milionerzy\OpenGL-cube3D\OpenGL - Game Cube3D\OpenGL - Game Cube3D\Main.cpp(1123,13): warning C4551: wywołaniu funkcji brakuje listy argumentów
+C:\Users\Staszek\Documents\milionerzy\OpenGL-cube3D\OpenGL - Game Cube3D\OpenGL - Game Cube3D\Main.cpp(1206,5): warning C4551: wywołaniu funkcji brakuje listy argumentów
   OpenGL - Game Cube3D.vcxproj -> C:\Users\Staszek\Documents\milionerzy\OpenGL-cube3D\OpenGL - Game Cube3D\x64\Debug\OpenGL - Game Cube3D.exe

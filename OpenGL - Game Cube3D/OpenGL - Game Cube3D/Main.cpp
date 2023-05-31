@@ -3,10 +3,15 @@
 #define STB_IMAGE_IMPLEMENTATION
 #include "stb-master/stb_image.h"
 
+#include <assimp/Importer.hpp>
+#include <assimp/scene.h>
+#include <assimp/postprocess.h>
+#include <vector>
+
 // Rozmiary okna
 const int WIDTH = 1366;
 const int HEIGHT = 768;
-int ROZDZIAL = 1;
+int ROZDZIAL = 5;
 const float STEP = 0.5f;
 
 // Do tekstury
@@ -53,6 +58,86 @@ bool lvl3done = false;
 bool lvl4done = false;
 bool lvl5done = false;
 
+
+// pocz¹tkowe pozycje myszy
+int mouseX = 0;
+int mouseY = 0;
+// obroty kamery
+float cameraRotationX = 0.0f;
+float cameraRotationY = 0.0f;
+
+// Pozycje kamery
+GLfloat cameraPosition[] = { 0.0f, 24.0f, 9.0f };
+GLfloat cameraPositionBackup[] = { 0.0f, 24.0f, 9.0f };
+GLfloat cameraPositionStairsLvl[] = { 15.0f, 35.0f, 6.0f };
+GLfloat cameraPositionLvl5[] = { 0.0f, 30.0f, 4.5f };
+
+void loadModel(const char* filename) {
+    Assimp::Importer importer;
+    const aiScene* scene = importer.ReadFile(filename, aiProcess_Triangulate | aiProcess_GenSmoothNormals | aiProcess_FlipUVs | aiProcess_CalcTangentSpace);
+    if (!scene || scene->mFlags & AI_SCENE_FLAGS_INCOMPLETE || !scene->mRootNode) {
+        std::cout << "Failed to load model: " << importer.GetErrorString() << std::endl;
+        return;
+    }
+
+    aiMesh* mesh = scene->mMeshes[0]; // Zak³adamy, ¿e istnieje tylko jeden mesh w modelu
+
+    // Przygotowanie tablic wierzcho³ków, normalnych i tekstur
+    std::vector<GLfloat> vertices;
+    std::vector<GLfloat> normals;
+    std::vector<GLfloat> texCoords;
+
+    for (unsigned int i = 0; i < mesh->mNumVertices; i++) {
+        // Wierzcho³ki
+        vertices.push_back(mesh->mVertices[i].x * 0.5);
+        vertices.push_back(mesh->mVertices[i].y * 0.5);
+        vertices.push_back(mesh->mVertices[i].z * 0.5);
+
+        // Normalne
+        normals.push_back(mesh->mNormals[i].x);
+        normals.push_back(mesh->mNormals[i].y);
+        normals.push_back(mesh->mNormals[i].z);
+
+        // Tekstury
+        if (mesh->mTextureCoords[0]) { // SprawdŸ, czy istniej¹ wspó³rzêdne tekstur
+            texCoords.push_back(mesh->mTextureCoords[0][i].x);
+            texCoords.push_back(mesh->mTextureCoords[0][i].y);
+        }
+        else {
+            texCoords.push_back(0.0f);
+            texCoords.push_back(0.0f);
+        }
+    }
+
+    // Przygotowanie tablic indeksów dla elementów
+    std::vector<GLuint> indices;
+    for (unsigned int i = 0; i < mesh->mNumFaces; i++) {
+        aiFace face = mesh->mFaces[i];
+        for (unsigned int j = 0; j < face.mNumIndices; j++) {
+            indices.push_back(face.mIndices[j]);
+        }
+    }
+
+    // Renderowanie modelu
+    glEnableClientState(GL_VERTEX_ARRAY);
+    glEnableClientState(GL_NORMAL_ARRAY);
+    glEnableClientState(GL_TEXTURE_COORD_ARRAY);
+
+    glVertexPointer(3, GL_FLOAT, 0, vertices.data());
+    glNormalPointer(GL_FLOAT, 0, normals.data());
+    glTexCoordPointer(2, GL_FLOAT, 0, texCoords.data());
+
+    glDrawElements(GL_TRIANGLES, indices.size(), GL_UNSIGNED_INT, indices.data());
+
+    glDisableClientState(GL_VERTEX_ARRAY);
+    glDisableClientState(GL_NORMAL_ARRAY);
+    glDisableClientState(GL_TEXTURE_COORD_ARRAY);
+}
+
+
+
+
+
 void restartGame() {
     ROZDZIAL = 1;
     cubeX = 0.0f;
@@ -66,6 +151,9 @@ void restartGame() {
     lvl3done = false;
     lvl4done = false;
     lvl5done = false;
+    cameraPosition[0] = cameraPositionBackup[0];
+    cameraPosition[1] = cameraPositionBackup[1];
+    cameraPosition[2] = cameraPositionBackup[2];
 }
 
 void lavaCreate(float x, float z, float xStep, float zStep) {
@@ -183,23 +271,17 @@ bool checkCollisionWithObj(float cubeX, float cubeZ, float startObjX, float star
 bool clickedE = false;
 //Miejsce drabiny
 bool miejsceDrabiny(float cubeX, float cubeY, float cubeZ) {
-    if (cubeX == ledderX && cubeZ == 0.0f )
+    if (cubeX == ledderX && cubeZ == 0.0f)
         return true;
     else
         return false;
 }
-// pocz¹tkowe pozycje myszy
-int mouseX = 0;
-int mouseY = 0;
-// obroty kamery
-float cameraRotationX = 0.0f;
-float cameraRotationY = 0.0f;
 
-GLfloat cameraPosition[] = { 0.0f, 2.0f, 6.0f };
+
 
 //Funkcje rysuj¹ce obiekty
 
-void drawCircle(float x, float y,float high, float radius)
+void drawCircle(float x, float y, float high, float radius)
 {
     glColor3f(1.0f, 0.0f, 1.0f);
     //glTranslatef(5.0f, 0.0f, 5.0f);
@@ -239,8 +321,8 @@ void drawLadder(float x, float z)
     glBegin(GL_QUADS);
     glTexCoord2f(0.0f, 0.f); glVertex3f(FLOOR_X - 0.001f, 0.0f, -1.5f);
     glTexCoord2f(0.0f, 1.0f); glVertex3f(FLOOR_X - 0.001f, 0.0f, 1.5f);
-    glTexCoord2f(1.0f, 1.0f); glVertex3f(FLOOR_X - 0.001f, 10.0f, 1.5f);
-    glTexCoord2f(1.0f, 0.0f); glVertex3f(FLOOR_X - 0.001f, 10.0f, -1.5f);
+    glTexCoord2f(1.0f, 1.0f); glVertex3f(FLOOR_X - 0.001f, 5.0f, 1.5f);
+    glTexCoord2f(1.0f, 0.0f); glVertex3f(FLOOR_X - 0.001f, 5.0f, -1.5f);
 
     glEnd();
 
@@ -248,11 +330,14 @@ void drawLadder(float x, float z)
 
 // Funkcja rysuj¹ca scenê
 void renderScene() {
+    if (!miejsceDrabiny(cubeX, cubeY, cubeZ) && cubeY > 0.5f) {
+        cubeIsFalling = true;
+    }
     // Aktualizacja pozycji kostki
     if (cubeIsJumping)
     {
         cubeY += 0.1f;
-        if (cubeY >=tmpCubeY + JUMP_HEIGHT + FLOOR_Y)
+        if (cubeY >= tmpCubeY + JUMP_HEIGHT + FLOOR_Y)
         {
             cubeIsJumping = false;
             cubeIsFalling = true;
@@ -284,6 +369,9 @@ void renderScene() {
     // Ustawienie kamery
     glMatrixMode(GL_MODELVIEW);
     glLoadIdentity();
+    /*gluLookAt(cameraPosition[0], cameraPosition[1], cameraPosition[2],
+        0.0f, 0.0f, 0.0f,
+        0.0f, 1.0f, 0.0f);*/
     gluLookAt(cameraPosition[0], cameraPosition[1], cameraPosition[2],
         0.0f, 0.0f, 0.0f,
         0.0f, 1.0f, 0.0f);
@@ -294,6 +382,8 @@ void renderScene() {
 
         FLOOR_X = 10.0f;
         FLOOR_Z = 10.0f;
+
+
 
         // £adowanie nowej tekstury
         unsigned char* floorData = stbi_load("Tekstury\\floor-small.jpg", &width, &height, &channels, 0);
@@ -308,6 +398,13 @@ void renderScene() {
         // Generowanie nowej tekstury dla œciany
         unsigned int wallTextureID;
         glGenTextures(1, &wallTextureID);
+
+        // £adowanie nowej tekstury dla œciany
+        unsigned char* containerData = stbi_load("Tekstury\\container-small.jpg", &width, &height, &channels, 0);
+
+        // Generowanie nowej tekstury dla œciany
+        unsigned int containerTextureID;
+        glGenTextures(1, &containerTextureID);
 
         // Ustawienie nowych parametrów tekstury
         glBindTexture(GL_TEXTURE_2D, floorTextureID);
@@ -325,11 +422,20 @@ void renderScene() {
         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
         glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, width, height, 0, GL_RGB, GL_UNSIGNED_BYTE, wallData);
 
+        // Ustawienie nowych parametrów tekstury dla œciany
+        glBindTexture(GL_TEXTURE_2D, containerTextureID);
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+        glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, width, height, 0, GL_RGB, GL_UNSIGNED_BYTE, containerData);
+
         // Zwalnianie pamiêci
         stbi_image_free(wallData);
 
         // Zwalnianie pamiêci
         stbi_image_free(floorData);
+        stbi_image_free(containerData);
         glEnable(GL_TEXTURE_2D);
 
         // Wyczyszczenie bufora koloru i g³êbokoœci
@@ -379,12 +485,14 @@ void renderScene() {
         glTexCoord2f(5.0f, 0.0f); glVertex3f(FLOOR_SIZE, 0.0f, FLOOR_SIZE);
         glEnd();
 
+
+        glBindTexture(GL_TEXTURE_2D, containerTextureID);
         // Rysowanie ró¿owej kostki
         glPushMatrix();
-        glColor3f(1.0f, 0.5f, 0.5f);
         glTranslatef(cubePinkX, cubePinkY, cubePinkZ);
-        glutSolidCube(1.0f);
+        loadModel("Modele//cube.obj");
         glPopMatrix();
+        glEnd;
 
         if (lvl1done) {
 
@@ -409,9 +517,9 @@ void renderScene() {
             }
         }
         else {
-            drawCircle(-5.0f, -5.0f,FLOOR_Y, 0.5f);
+            drawCircle(-5.0f, -5.0f, FLOOR_Y, 0.5f);
             glPopMatrix;
-            drawCircle(5.0f, 5.0f,FLOOR_Y, 0.5f);
+            drawCircle(5.0f, 5.0f, FLOOR_Y, 0.5f);
             glPopMatrix;
         }
 
@@ -558,6 +666,9 @@ void renderScene() {
             ROZDZIAL++;
             cubeX = 0.0f;
             cubeZ = 9.0f;
+            cameraPosition[0] = cameraPositionStairsLvl[0];
+            cameraPosition[1] = cameraPositionStairsLvl[1];
+            cameraPosition[2] = cameraPositionStairsLvl[2];
         }
         //Sprawdzenie czy kolizji z law¹
         else if (checkCollisionWithObj(cubeX, cubeZ, -5.0f, 2.0f, 8.0f, 4.0f)
@@ -691,6 +802,9 @@ void renderScene() {
             cubeX = 0.0f;
             cubeZ = -9.0f;
             cubeY = 0.5f;
+            cameraPosition[0] = cameraPositionBackup[0];
+            cameraPosition[1] = cameraPositionBackup[1];
+            cameraPosition[2] = cameraPositionBackup[2];
         }
         //Przejœcie do nastêpnego poziomu
         else if (cubeX > -1.5f && cubeX < 1.5f && cubeZ == -FLOOR_Z + STEP) {
@@ -698,6 +812,9 @@ void renderScene() {
             cubeX = 0.0f;
             cubeZ = 9.0f;
             cubeY = 0.5f;
+            cameraPosition[0] = cameraPositionBackup[0];
+            cameraPosition[1] = cameraPositionBackup[1];
+            cameraPosition[2] = cameraPositionBackup[2];
         }
 
     }
@@ -866,12 +983,18 @@ void renderScene() {
             cubeX = 0.0f;
             cubeZ = -9.0f;
             cubeY = 10.0f;
+            cameraPosition[0] = cameraPositionStairsLvl[0];
+            cameraPosition[1] = cameraPositionStairsLvl[1];
+            cameraPosition[2] = cameraPositionStairsLvl[2];
         }
         //Przejœcie do nastêpnego poziomu
         else if (cubeX > -1.5f && cubeX < 1.5f && cubeZ == -FLOOR_Z + STEP) {
             ROZDZIAL++;
             cubeX = 0.0f;
             cubeZ = 4.0f;
+            cameraPosition[0] = cameraPositionLvl5[0];
+            cameraPosition[1] = cameraPositionLvl5[1];
+            cameraPosition[2] = cameraPositionLvl5[2];
         }
     }
     else if (ROZDZIAL == 5) {
@@ -993,7 +1116,7 @@ void renderScene() {
         }
         else {
 
-         
+
             drawCircle(13.5f, 0.0f, 8.0f, 0.5f);
             glPopMatrix;
             drawCircle(13.5f, 0.0f, 8.0f, 0.5f);
@@ -1031,7 +1154,7 @@ void renderScene() {
 
         }
         glColor3f(1.0f, 1.0f, 1.0f);
-        
+
         ledderX = FLOOR_X - STEP;
         ledderZ = FLOOR_Z;
         drawLadder(ledderX, ledderZ);
@@ -1041,19 +1164,46 @@ void renderScene() {
             ROZDZIAL--;
             cubeX = 0.0f;
             cubeZ = -9.0f;
+            cameraPosition[0] = cameraPositionBackup[0];
+            cameraPosition[1] = cameraPositionBackup[1];
+            cameraPosition[2] = cameraPositionBackup[2];
         }
         //Ukoñczenie poziomu
         else if (cubeX == 13.5f && cubeZ == 0.0f && cubeY >= 8.0f) {
             lvl5done = true;
         }
     }
+
+    // £adowanie nowej tekstury dla œciany
+    unsigned char* characterData = stbi_load("Tekstury\\lava-small.jpg", &width, &height, &channels, 0);
+
+    // Generowanie nowej tekstury dla œciany
+    unsigned int characterTextureId;
+    glGenTextures(1, &characterTextureId);
+
+    // Ustawienie nowych parametrów tekstury dla œciany
+    glBindTexture(GL_TEXTURE_2D, characterTextureId);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, width, height, 0, GL_RGB, GL_UNSIGNED_BYTE, characterData);
+
+    // Zwalnianie pamiêci
+    stbi_image_free(characterData);
+
+    glBindTexture(GL_TEXTURE_2D, characterTextureId);
+
+
     // Rysowanie kostki
     glPushMatrix();
-    glColor3f(0.0f, 0.0f, 1.0f);
+    // glColor3f(0.0f, 0.0f, 1.0f);
     glTranslatef(cubeX, cubeY, cubeZ);
-    glutSolidCube(0.99f);
-    glPopMatrix();
 
+    loadModel("Modele//character.obj");
+    // glutSolidCube(0.99f);
+    glPopMatrix();
+    glEnd;
     glColor3f(1.0f, 1.0f, 1.0f);
 
     glutPostRedisplay(); // Odœwie¿enie ekranu po dotarciu na odpowiednie koordy
