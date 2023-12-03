@@ -1,0 +1,11 @@
+Add objects:
+
+character.obj
+cube.obj
+cube.mtl
+door.mtl
+door.obj
+lamps.mtl
+lamps.obj
+obj.obj
+saw.obj

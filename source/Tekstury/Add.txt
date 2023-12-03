@@ -1,0 +1,21 @@
+Add files:
+
+bricks.png and bricks.jpg
+bricks2 and bricks-small.png
+container and container-small.png
+door.jpg
+doors.jpg
+door-small.jpg
+face.jpg
+floor.png
+floor.jpg
+floor-small.jpg
+ladder.png
+ladder.jpg
+lava-small.jpg
+pexels.jpg
+pexels-small.jpg
+stairs.jpg
+stairs-small.jpg
+wall.jpg
+wall-small.jpg

@@ -1,0 +1,23 @@
+Domyślne ścieżki plików nagłówkowych
+	GLUT: C:\Lib\freeglut\include
+	ASSIMP: C:\Program Files\Assimp\include
+
+Domyślne ścieżki bibliotek
+	GLUT:C:\Lib\freeglut\lib
+	ASSIMP: C:\Program Files\Assimp\lib\x64
+
+Domyślnie pliki w głównym folderu projektu:
+	assimp-vc143-mt.dll
+	freeglut.dll
+
+
+Otwórz projekt „OpenGL - Game Cube3D” przy pomocy VISUAL STUDIO 2022.
+Kliknij prawym przyciskiem w oknie Solution Explorer na nazwę projektu i kliknij w „Właściwości”.
+Następnie należy dodać:
+	-W „Katalogi VC++” – „Katalogi plików nagłówkowych” – dodaj ścieżkę do pliku nagłówkowego glut).
+	-W „C/C++” – „Dodatkowe katalogi plików nagłówkowych” oraz w „Wszystkie opcje” – dodaj ścieżkę do plików nagłówkowych Assim, glut oraz stb_image.
+	-W „Konsolidator” – „Dodatkowe katalogi biblioteki” – dodaj ścieżki do bibliotek assimp oraz glut.  
+	-W „Konsolidator” – „Dane wejściowe” – dodaj dokładną nazwę biblioteki assimp. 
+
+Następnie należy wybrać plik „main.cpp” w oknie Solution Explorer i otworzyć go. 
+W ostatnim kroku skompiluj program przy pomocy lokalnego debugera windows.
